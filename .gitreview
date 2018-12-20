@@ -1,0 +1,6 @@
+[gerrit]
+host=bbpcode.epfl.ch
+port=22
+project=nse/plotly-helper
+defaultbranch=master
+defaultremote=origin
