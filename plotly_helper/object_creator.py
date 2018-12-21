@@ -2,8 +2,10 @@
 import numpy as np
 import plotly.graph_objs as go
 
+from plotly_helper.helper import PlotlyObjectProperties
 
-def create_scatter_line(points, name='', color='red', visible=True, showlegend=True, opacity=1.):
+
+def create_scatter_line(points, properties=None):
     """ Create a line scatter plot from an array of points
 
     Args :
@@ -16,16 +18,18 @@ def create_scatter_line(points, name='', color='red', visible=True, showlegend=T
     Returns :
         A scatter plot representing points
     """
-    obj = go.Scatter3d(visible=visible, marker=dict(size=3, color=color),
-                       line=dict(width=5, color=color),
-                       x=points[:, 0], y=points[:, 1], z=points[:, 2], showlegend=showlegend,
-                       opacity=opacity)
-    if name:
-        obj.name = name
+    if properties is None:
+        properties = PlotlyObjectProperties()
+    obj = go.Scatter3d(visible=properties.visible, marker=dict(size=3, color=properties.color),
+                       line=dict(width=5, color=properties.color),
+                       x=points[:, 0], y=points[:, 1], z=points[:, 2],
+                       showlegend=properties.showlegend, opacity=properties.opacity)
+    if properties.name:
+        obj.name = properties.name
     return obj
 
 
-def create_scatter(points, name='', color='red', visible=True, showlegend=True, opacity=1.):
+def create_scatter(points, properties=None):
     """ Create a scatter plot from a numpy array of points
 
     Args :
@@ -38,13 +42,14 @@ def create_scatter(points, name='', color='red', visible=True, showlegend=True, 
     Returns :
         A scatter plot representing points
     """
-    scatter = create_scatter_line(points, name=name, color=color, visible=visible,
-                                  showlegend=showlegend, opacity=opacity)
+    if properties is None:
+        properties = PlotlyObjectProperties()
+    scatter = create_scatter_line(points, properties)
     scatter.mode = 'markers'
     return scatter
 
 
-def create_point(p, name='', color='red', visible=True, showlegend=True, opacity=1.):
+def create_point(point, properties=None):
     """ Create a single point
 
     Args :
@@ -57,11 +62,12 @@ def create_point(p, name='', color='red', visible=True, showlegend=True, opacity
     Returns :
         A scatter plot representing one point
     """
-    return create_scatter(np.array([p, ]), name=name, color=color, visible=visible,
-                          showlegend=showlegend, opacity=opacity)
+    if properties is None:
+        properties = PlotlyObjectProperties()
+    return create_scatter(np.array([point, ]), properties)
 
 
-def create_vector(p1, p2, name='', color='red', visible=True, showlegend=True, opacity=1.):
+def create_vector(point1, point2, properties=None):
     """ Create a 3d vector using 2 numpy arrays
 
     Args :
@@ -75,5 +81,6 @@ def create_vector(p1, p2, name='', color='red', visible=True, showlegend=True, o
     Returns :
         a scatter plot representing vector for plotly
     """
-    return create_scatter_line(np.vstack((p1, p2)), name=name, color=color, visible=visible,
-                               showlegend=showlegend, opacity=opacity)
+    if properties is None:
+        properties = PlotlyObjectProperties()
+    return create_scatter_line(np.vstack((point1, point2)), properties)

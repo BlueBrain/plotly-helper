@@ -3,10 +3,14 @@
 You can find information on python plotly here : https://plot.ly/python/
 """
 import os
+from collections import namedtuple
 
 import six
 import numpy as np
+
 from plotly.offline import plot, iplot
+# unknown pylint problem with this import
+# pylint: disable-msg=E0611,E0001
 from plotly.basedatatypes import BaseTraceType
 
 
@@ -67,30 +71,21 @@ class PlotlyHelper(object):
         Args:
             name: the id used to name a group of plotly object (str)
             objs: a list containing the plotly objects included in the group 'name'
+
+        Raises:
+            ValueError: An error occurs if name shadows a previous entry name
         """
         if name in self.visibility_map:
             raise ValueError('{} already exists'.format(name))
         self.visibility_map[name] = range(len(self.data), len(self.data) + len(objs))
 
-    def _get_data_positions(self, name):
-        """ Return the positions of the group 'name' in the position list
-
-        Args:
-            name: the name of the group you want to retrieve (str)
-
-        Returns:
-            the range in the visibility list corresponding to the group 'name'
-
-        """
-        return self.visibility_map[name]
-
     def _place_buttons(self, offset=0.01):
         """ Place the buttons using the update menu from plotly """
-        y = 1
+        y_position = 1
         for group in self.updatemenus:
-            group['y'] = y
+            group['y'] = y_position
             gap = 0.04 if group['direction'] == 'right' else len(group['buttons']) * 0.04
-            y = y - (gap + offset)
+            y_position = y_position - (gap + offset)
 
     def get_visibility_list(self, names):
         """ Return the boolean list for the groups in names
@@ -102,6 +97,9 @@ class PlotlyHelper(object):
         Returns:
             the visibility list used in plotly with True for all groups in names and False
             elsewhere.
+
+        Raises:
+            KeyError: if a name is not found in the visibility map
 
         Notes:
              This function is a helper to facilitate the manipulation of plotly visibility. The
@@ -120,13 +118,21 @@ class PlotlyHelper(object):
         if isinstance(names, six.string_types):
             names = [names]
         try:
-            true_indexes = set([item for name in names for item in self.visibility_map[name]])
-        except KeyError as e:
-            raise KeyError('Can not find the object {}'.format(e))
+            true_indexes = set(item for name in names for item in self.visibility_map[name])
+        except KeyError as error:
+            raise KeyError('Can not find the object {}'.format(error))
         return [i in true_indexes for i in range(self.nb_objects)]
 
     @staticmethod
     def _group_validator(obj_groups):
+        """ Type validator for a group of plotly objects
+
+        Raises:
+            TypeError: if obj_groups is not a dict
+            TypeError: if an item in obj_groups is not a BaseTraceType
+            TypeError: if a key in obj_groups is not a string_type
+            ValueError: if an item is empty
+        """
         if not isinstance(obj_groups, dict):
             raise TypeError('can t add {} to helper. Must be a dict'.format(obj_groups))
 
@@ -142,7 +148,7 @@ class PlotlyHelper(object):
                 raise TypeError('bad obj_group {} for name'.format(name))
 
             if isinstance(obj_group, list):
-                if len(obj_group) == 0:
+                if not obj_group:
                     raise ValueError('{} object is empty'.format(name))
                 for obj in obj_group:
                     _obj_validator(obj)
@@ -151,7 +157,7 @@ class PlotlyHelper(object):
         """ Add plotly data to the plot and update its visibility map
 
         Args:
-            obj_groups: a dict {name1: [list of plotly objects], name2: [list of plotly object], ...}
+            obj_groups: a dict {name1: [list of plotly objs], name2: [list of plotly obj], ...}
 
         Note:
             This function is used to keep track of insertion numbers and to group different plotly
@@ -172,6 +178,9 @@ class PlotlyHelper(object):
         Args:
             names: a list of name [name1, name2, ...] of object to remove
 
+        Raises:
+            ValueError: if one of the name has been referenced before
+
         Note:
             This function keeps recompute the number of object and visibility_map for all objects
         """
@@ -182,9 +191,9 @@ class PlotlyHelper(object):
             to_removed_range = visibility_map.pop(obj_name)
             for c_name, obj_range in self.visibility_map.items():
                 if obj_range[0] > to_removed_range[-1]:
-                    c_range = visibility_map[c_name]
-                    start = c_range.start - len(to_removed_range)
-                    stop = c_range.stop - len(to_removed_range)
+                    c_range = list(visibility_map[c_name])
+                    start = c_range[0] - len(to_removed_range)
+                    stop = c_range[-1] - len(to_removed_range) + 1
                     visibility_map[c_name] = range(start, stop)
             return to_removed_range
 
@@ -192,9 +201,9 @@ class PlotlyHelper(object):
             names = [names]
 
         for name in names:
-            removed_range = _remove_visibility(self.visibility_map, name)
+            removed_range = list(_remove_visibility(self.visibility_map, name))
             self.nb_objects -= len(removed_range)
-            del self.data[slice(removed_range.start, removed_range.stop)]
+            del self.data[slice(removed_range[0], removed_range[-1] + 1)]
 
     def add_shapes(self, shapes):
         """ Add shape to the figure
@@ -263,6 +272,14 @@ class PlotlyHelperPlane(PlotlyHelper):
         Args:
             plane: a string that should be a combination of 'x', 'y' or 'z'
 
+        Returns :
+            A sanitized plane such as 3d, xy, xz, zy
+
+        Raises:
+            TypeError: if the plane provided is not a string type
+            ValueError: if the plane input is not composed of 2 characters or not a 2-combination
+            of x, y and z or 3d
+
         Notes:
             Good values are : 3d, xy, xz, zy ...
         """
@@ -272,7 +289,7 @@ class PlotlyHelperPlane(PlotlyHelper):
         if len(plane) > 2:
             raise ValueError('plane argument must be "3d" or a 2-combination of x, y and z')
         if plane == '3d':
-            return 'xyz'
+            plane = 'xyz'
         else:
             values = 'xyz'
             correct = sum(1 if v in plane else 0 for v in values) == 2
@@ -349,6 +366,11 @@ class PlotlyHelperPlane(PlotlyHelper):
                             'view')
 
 
+PlotlyObjectProperties = namedtuple('PlotlyObjectProperties', ('name', 'color', 'visible',
+                                                               'showlegend', 'opacity'))
+PlotlyObjectProperties.__new__.__defaults__ = ('', 'red', True, True, 1.)
+
+
 def plot_fig(fig, filename, auto_open=True, show_link=False):
     """ Create the html file """
     if os.path.splitext(filename)[1] != '.html':
@@ -356,7 +378,7 @@ def plot_fig(fig, filename, auto_open=True, show_link=False):
     plot(fig, filename=filename, auto_open=auto_open, show_link=show_link)
 
 
-def iplot_fig(fig, filename, show_link=False):
+def iplot_fig(fig, filename, show_link=False):  # pragma: no cover
     """ Plot the figure inside a jupyter notebook """
     if os.path.splitext(filename)[1] != '.html':
         filename += '.html'

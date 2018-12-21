@@ -1,0 +1,8 @@
+[DESIGN]
+
+# Maximum number of arguments for function / method
+max-args=10
+
+# Maximum number of class attributes
+max-attributes=20
+

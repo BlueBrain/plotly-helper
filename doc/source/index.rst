@@ -67,7 +67,9 @@ We will create a simple example with two populations of randomly placed points i
     >>> helper = PlotlyHelperPlane('my_plot', '3d')
     >>> population1 = np.random.random((50, 3))
     >>> population2 = np.random.random((50, 3))
-    >>> graph_pop1 = create_scatter(population1, name='pop1', color='red')
+    >>> prop1 = PlotlyObjectProperties(name='pop1', color='red')
+    >>> graph_pop1 = create_scatter(population1, prop1)
+    >>> prop2 = PlotlyObjectProperties(name='pop2', color='blue')
     >>> graph_pop2 = create_scatter(population2, name='pop2', color='blue')
     >>> helper.add_data({'pop1': graph_pop1, 'pop2': graph_pop2})
     >>> helper.add_button('all', 'update',
