@@ -214,8 +214,7 @@ class PlotlyHelper(object):
         Notes:
             A plotly shape is an object displayed on the plot background.
         """
-        for shape in shapes:
-            self.shapes.append(shape)
+        self.shapes.extend(shapes)
 
     def add_button(self, label, method, args, groupname='classic', direction='down'):
         """ Add button to the figure.
@@ -273,7 +272,7 @@ class PlotlyHelperPlane(PlotlyHelper):
             plane: a string that should be a combination of 'x', 'y' or 'z'
 
         Returns :
-            A sanitized plane such as 3d, xy, xz, zy
+            A sanitized plane such as xyz, xy, xz, zy
 
         Raises:
             TypeError: if the plane provided is not a string type
