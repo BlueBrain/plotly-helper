@@ -14,6 +14,7 @@ from neurom import COLS, iter_neurites, iter_sections, iter_segments
 from neurom.view.view import TREE_COLOR
 
 from plotly_helper.helper import PlotlyHelperPlane
+from plotly_helper.shapes import circle
 
 NEURON_NAME = 'neuron'
 SOMA_NAME = 'soma'
@@ -105,31 +106,23 @@ def _make_soma(neuron):
     ''' Create a 3d surface representing the soma '''
     theta = np.linspace(0, 2 * np.pi, 100)
     phi = np.linspace(0, np.pi, 100)
-    soma_z = np.outer(np.ones(100), np.cos(phi)) + neuron.soma.center[2]
     soma_r = neuron.soma.radius
+    soma_z = np.outer(np.ones(100), np.cos(phi)) * soma_r + neuron.soma.center[2]
     return go.Surface(
         name=SOMA_NAME,
-        x=(np.outer(np.cos(theta), np.sin(phi)) + neuron.soma.center[0]) * soma_r,
-        y=(np.outer(np.sin(theta), np.sin(phi)) + neuron.soma.center[1]) * soma_r,
-        z=soma_z * soma_r,
+        x=(np.outer(np.cos(theta), np.sin(phi)) * soma_r + neuron.soma.center[0]),
+        y=(np.outer(np.sin(theta), np.sin(phi)) * soma_r + neuron.soma.center[1]),
+        z=soma_z,
         cauto=False, surfacecolor=['black'] * len(soma_z), showscale=False,
     )
 
 
-def _make_soma2d(neuron):
-    return {
-        'type': 'circle',
-        'xref': 'x',
-        'yref': 'y',
-        'fillcolor': 'rgba(50, 171, 96, 0.7)',
-        'x0': neuron.soma.center[0] - neuron.soma.radius,
-        'y0': neuron.soma.center[1] - neuron.soma.radius,
-        'x1': neuron.soma.center[0] + neuron.soma.radius,
-        'y1': neuron.soma.center[1] + neuron.soma.radius,
-        'line': {
-            'color': 'rgba(50, 171, 96, 1)',
-        },
-    }
+def _make_soma2d(neuron, plane):
+    idx = {'x': 0, 'y': 1, 'z': 2}
+    return circle(neuron.soma.center[idx[plane[0]]],
+                  neuron.soma.center[idx[plane[1]]],
+                  neuron.soma.radius,
+                  color='rgba(50, 171, 96, 1)')
 
 
 class NeuronBuilder:
@@ -174,7 +167,7 @@ class NeuronBuilder:
         else:
             self.helper.add_data({NEURON_NAME: _make_trace2d(
                 self.neuron, self.helper.plane, style=self.properties, line_width=self.line_width)})
-            self.helper.add_shapes([_make_soma2d(self.neuron)])
+            self.helper.add_shapes([_make_soma2d(self.neuron, self.helper.plane)])
 
         fig = self.helper.get_fig()
         plot_fun = iplot if self.inline else plot_

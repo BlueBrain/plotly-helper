@@ -6,7 +6,7 @@ import numpy as np
 import nose.tools as nt
 import plotly.graph_objs as go
 
-from plotly_helper.helper import PlotlyHelper, PlotlyHelperPlane, PlotlyObjectProperties
+from plotly_helper.helper import PlotlyHelper, PlotlyHelperPlane
 from plotly_helper.helper import plot_fig, iplot_fig
 
 @contextmanager
@@ -182,24 +182,6 @@ def test_add_button():
     nt.assert_list_equal(ok_update, helper.updatemenus)
 
 
-def test_plotly_object_properties_init():
-    default_prop = PlotlyObjectProperties()
-    nt.assert_equal(default_prop.name, '')
-    nt.assert_equal(default_prop.color, 'red')
-    nt.assert_equal(default_prop.visible, True)
-    nt.assert_equal(default_prop.showlegend, True)
-    nt.assert_equal(default_prop.opacity, 1.)
-
-    specific_prop = PlotlyObjectProperties(name='name', color='blue',
-                                           visible=False, showlegend=False,
-                                           opacity=0.2)
-    nt.assert_equal(specific_prop.name, 'name')
-    nt.assert_equal(specific_prop.color, 'blue')
-    nt.assert_equal(specific_prop.visible, False)
-    nt.assert_equal(specific_prop.showlegend, False)
-    nt.assert_equal(specific_prop.opacity, 0.2)
-
-
 def test_default_plotly_helper_plane_init():
     helper = PlotlyHelperPlane('test', 'xy')
     nt.assert_equal(helper.plane, 'xy')
@@ -297,4 +279,3 @@ def test_plot():
         output_file_2 = os.path.join(plot_dir, 'test2.html')
         plot_fig(helper.get_fig(), output_file_2, auto_open=False)
         nt.ok_(os.path.exists(output_file + '.html'))
-

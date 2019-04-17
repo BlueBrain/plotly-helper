@@ -3,7 +3,6 @@
 You can find information on python plotly here : https://plot.ly/python/
 """
 import os
-from collections import namedtuple
 
 import six
 import numpy as np
@@ -363,11 +362,6 @@ class PlotlyHelperPlane(PlotlyHelper):
                             'view')
             self.add_button('YZ view', 'relayout', ['scene', PlotlyHelperPlane._get_scene('yz')],
                             'view')
-
-
-PlotlyObjectProperties = namedtuple('PlotlyObjectProperties', ('name', 'color', 'visible',
-                                                               'showlegend', 'opacity'))
-PlotlyObjectProperties.__new__.__defaults__ = ('', 'red', True, True, 1.)
 
 
 def plot_fig(fig, filename, auto_open=True, show_link=False):

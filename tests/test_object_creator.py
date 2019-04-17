@@ -2,16 +2,14 @@ import nose.tools as nt
 import numpy as np
 import numpy.testing as npt
 
-from plotly_helper.helper import PlotlyObjectProperties
 import plotly_helper.object_creator as object_creator
 
 
 def test_create_scatter_line():
     points = np.array([[0, 0, 0], [1, 1, 1], [2, 2, 2]])
-    prop = PlotlyObjectProperties(name='plot1', visible=False)
-    obj = object_creator.create_scatter_line(points, prop).to_plotly_json()
-    good_obj = {'line': {'color': 'red', 'width': 5},
-                'marker': {'color': 'red', 'size': 3},
+    obj = object_creator.scatter_line(points, name='plot1', visible=False).to_plotly_json()
+    good_obj = {'line': {'width': 5},
+                'marker': {'size': 3},
                 'name': 'plot1',
                 'opacity': 1.0,
                 'showlegend': True,
@@ -28,11 +26,11 @@ def test_create_scatter_line():
     nt.assert_dict_equal(obj, good_obj)
 
 
-def test_create_scatter_line_2():
+def test_scatter_line_2():
     points = np.array([[0, 0, 0], [1, 1, 1], [2, 2, 2]])
-    obj = object_creator.create_scatter_line(points).to_plotly_json()
-    good_obj = {'line': {'color': 'red', 'width': 5},
-                'marker': {'color': 'red', 'size': 3},
+    obj = object_creator.scatter_line(points).to_plotly_json()
+    good_obj = {'line': {'width': 5},
+                'marker': {'size': 3},
                 'opacity': 1.0,
                 'showlegend': True,
                 'visible': True,
@@ -47,12 +45,12 @@ def test_create_scatter_line_2():
     npt.assert_array_equal(good_obj.pop('z'), obj.pop('z'))
     nt.assert_dict_equal(obj, good_obj)
 
-def test_create_scatter():
+def test_scatter():
     points = np.array([[0, 0, 0], [1, 1, 1], [2, 2, 2]])
-    obj = object_creator.create_scatter(points).to_plotly_json()
+    obj = object_creator.scatter(points).to_plotly_json()
     good_obj = {'mode': 'markers',
-                'line': {'color': 'red', 'width': 5},
-                'marker': {'color': 'red', 'size': 3},
+                'line': {'width': 5},
+                'marker': {'line': {'width': 5}},
                 'opacity': 1.0,
                 'showlegend': True,
                 'visible': True,
@@ -68,12 +66,12 @@ def test_create_scatter():
     nt.assert_dict_equal(obj, good_obj)
 
 
-def test_create_point():
+def test_point():
     point = np.array([1, 1, 1])
-    obj = object_creator.create_point(point).to_plotly_json()
+    obj = object_creator.point(point).to_plotly_json()
     good_obj = {'mode': 'markers',
-                'line': {'color': 'red', 'width': 5},
-                'marker': {'color': 'red', 'size': 3},
+                'line': {'width': 5},
+                'marker': {'line': {'width': 5}},
                 'opacity': 1.0,
                 'showlegend': True,
                 'visible': True,
@@ -89,13 +87,13 @@ def test_create_point():
     nt.assert_dict_equal(obj, good_obj)
 
 
-def test_create_vector():
+def test_vector():
     point1 = np.array([1, 1, 1])
     point2 = np.array([2, 2, 2])
 
-    obj = object_creator.create_vector(point1, point2).to_plotly_json()
-    good_obj = {'line': {'color': 'red', 'width': 5},
-                'marker': {'color': 'red', 'size': 3},
+    obj = object_creator.vector(point1, point2).to_plotly_json()
+    good_obj = {'line': {'width': 5},
+                'marker': {'size': 3},
                 'opacity': 1.0,
                 'showlegend': True,
                 'visible': True,
