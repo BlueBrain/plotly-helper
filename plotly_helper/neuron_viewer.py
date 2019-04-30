@@ -128,13 +128,12 @@ def _make_soma2d(neuron, plane):
 class NeuronBuilder:
     '''A helper class to plot neuron and colorize specific sections'''
     def __init__(self, neuron, plane, title='neuron', inline=False, line_width=2):
-        self.title = title
         self.neuron = neuron
         self.inline = inline
         self.line_width = line_width
 
         self.properties = defaultdict(dict)
-        self.helper = PlotlyHelperPlane(self.title, plane)
+        self.helper = PlotlyHelperPlane(title, plane)
 
     def color_section(self, section, color='green', recursive=False, start_point=0, end_point=None):
         '''Colors points of the section between start_point and end_point
@@ -153,11 +152,8 @@ class NeuronBuilder:
             for child in section.children:
                 self.color_section(child, color, recursive=True)
 
-    def plot(self, *args, **kwargs):
-        '''Plot
-
-        All args are passed to plotly plot
-        '''
+    def get_figure(self):
+        '''Build the figure and returns it'''
         is_3d = (self.helper.plane == 'xyz')
         if is_3d:
             self.helper.add_data({NEURON_NAME: _make_trace(
@@ -168,14 +164,20 @@ class NeuronBuilder:
             self.helper.add_data({NEURON_NAME: _make_trace2d(
                 self.neuron, self.helper.plane, style=self.properties, line_width=self.line_width)})
             self.helper.add_shapes([_make_soma2d(self.neuron, self.helper.plane)])
+        return self.helper.get_fig()
 
-        fig = self.helper.get_fig()
+    def plot(self, *args, **kwargs):
+        '''Plot
+
+        All args are passed to plotly plot
+        '''
+        fig = self.get_figure()
         plot_fun = iplot if self.inline else plot_
         self.helper.layout['height'] = 1000
 
         if self.inline:
             init_notebook_mode(connected=True)  # pragma: no cover
-        plot_fun(fig, filename=os.path.join('/tmp', self.title + '.html'), *args, **kwargs)
+        plot_fun(fig, filename=os.path.join('/tmp', self.helper.title + '.html'), *args, **kwargs)
 
         return fig
 
