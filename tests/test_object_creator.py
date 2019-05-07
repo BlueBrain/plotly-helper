@@ -50,7 +50,7 @@ def test_scatter():
     obj = object_creator.scatter(points).to_plotly_json()
     good_obj = {'mode': 'markers',
                 'line': {'width': 5},
-                'marker': {'line': {'width': 5}},
+                'marker': {'line': {'width': 5}, 'size': 5},
                 'opacity': 1.0,
                 'showlegend': True,
                 'visible': True,
@@ -71,7 +71,7 @@ def test_point():
     obj = object_creator.point(point).to_plotly_json()
     good_obj = {'mode': 'markers',
                 'line': {'width': 5},
-                'marker': {'line': {'width': 5}},
+                'marker': {'line': {'width': 5}, 'size': 5},
                 'opacity': 1.0,
                 'showlegend': True,
                 'visible': True,

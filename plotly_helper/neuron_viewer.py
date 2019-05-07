@@ -166,10 +166,14 @@ class NeuronBuilder:
             self.helper.add_shapes([_make_soma2d(self.neuron, self.helper.plane)])
         return self.helper.get_fig()
 
-    def plot(self, *args, **kwargs):
+    # pylint: disable=keyword-arg-before-vararg
+    def plot(self, filename=None, *args, **kwargs):
         '''Plot
 
-        All args are passed to plotly plot
+        Args:
+            filename (str): the output html filename
+
+        All other args are passed to plotly plot
         '''
         fig = self.get_figure()
         plot_fun = iplot if self.inline else plot_
@@ -177,7 +181,8 @@ class NeuronBuilder:
 
         if self.inline:
             init_notebook_mode(connected=True)  # pragma: no cover
-        plot_fun(fig, filename=os.path.join('/tmp', self.helper.title + '.html'), *args, **kwargs)
+        filename = filename or os.path.join('/tmp', self.helper.title + '.html')
+        plot_fun(fig, filename=filename, *args, **kwargs)
 
         return fig
 

@@ -50,7 +50,8 @@ def scatter(points, name=None, color=None, width=5, visible=True, showlegend=Tru
     obj = scatter_line(points, name, color, width, visible, showlegend, opacity)
     marker = dict(
         line=dict(width=width, color=color),
-        color=color
+        color=color,
+        size=width,
     )
     obj['marker'] = marker
     obj.mode = 'markers'
