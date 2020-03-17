@@ -13,8 +13,7 @@ setup(
     author_email="bbp-ou-nse@groupes.epfl.ch",
     version=VERSION,
     description="Package that makes plotly easy",
-    url="https://bbpteam.epfl.ch/project/issues/projects/NSETM/issues",
-    download_url="ssh://bbpcode.epfl.ch/nse/plotly-helper",
+    url="https://github.com/bluebrain/plotly-helper",
     license="BBP-internal-confidential",
     install_requires=[
         'plotly>=3.4.2',
