@@ -14,7 +14,7 @@ setup(
     version=VERSION,
     description="Package that makes plotly easy",
     url="https://github.com/bluebrain/plotly-helper",
-    license="BBP-internal-confidential",
+    license="LGPLv3",
     install_requires=[
         'plotly>=3.4.2',
         'numpy>=1.15.4',
