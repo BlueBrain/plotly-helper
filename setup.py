@@ -9,8 +9,7 @@ VERSION = imp.load_source("", "plotly_helper/version.py").__version__
 
 setup(
     name="plotly-helper",
-    author="BlueBrain NSE",
-    author_email="bbp-ou-nse@groupes.epfl.ch",
+    author="Blue Brain Project",
     version=VERSION,
     description="Package that makes plotly easy",
     url="https://github.com/bluebrain/plotly-helper",
