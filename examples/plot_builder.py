@@ -17,7 +17,7 @@ def plot():
     # Colorize only a fraction of the section
     builder.color_section(neuron.sections[159], color='black', start_point=20, end_point=120)
 
-    builder.plot()
+    builder.plot(filename='test.html')
 
 if __name__=='__main__':
     plot()
