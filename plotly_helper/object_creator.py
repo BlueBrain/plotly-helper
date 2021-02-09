@@ -3,8 +3,8 @@ import numpy as np
 import plotly.graph_objs as go
 
 
-def scatter_line(points, name=None, color=None, width=5, visible=True,
-                 showlegend=True, opacity=1.0):
+def line(points, name=None, color=None, width=5, visible=True,
+         showlegend=True, opacity=1.0):
     """ Create a line scatter plot from an array of points
 
     Args :
@@ -17,7 +17,39 @@ def scatter_line(points, name=None, color=None, width=5, visible=True,
     Returns :
         A scatter plot representing points
     """
-    args = dict(visible=visible, marker=dict(size=3, color=color),
+    args = dict(visible=visible,
+                line=dict(width=width, color=color),
+                x=points[:, 0], y=points[:, 1],
+                showlegend=showlegend, opacity=opacity)
+
+    if points.shape[1] == 3:
+        scatter_fun = go.Line3d
+        args['z'] = points[:, 2]
+    else:
+        scatter_fun = go.Scattergl
+
+    obj = scatter_fun(**args)
+    if name:
+        obj.name = name
+    return obj
+
+
+def scatter_line(points, name=None, color=None, width=5, visible=True,
+                 showlegend=True, opacity=1.0, marker_size=3):
+    """ Create a line scatter plot from an array of points
+
+    Args :
+        points: points used to create the scatter (np.array([[x1,y1,z1], ..., [x2,y2,z2]]))
+        color: a css color name or rgb (string)
+        visible: switch for visibility (bool)
+        showlegend: boolean to add object to the legend
+        opacity: set the opacity value (float)
+        marker_size: size of marker (set to small value to get lines)
+
+    Returns :
+        A scatter plot representing points
+    """
+    args = dict(visible=visible, marker=dict(size=marker_size, color=color),
                 line=dict(width=width, color=color),
                 x=points[:, 0], y=points[:, 1],
                 showlegend=showlegend, opacity=opacity)
