@@ -4,7 +4,6 @@ You can find information on python plotly here : https://plot.ly/python/
 """
 import os
 
-import six
 import numpy as np
 
 from plotly.offline import plot, iplot
@@ -13,8 +12,7 @@ from plotly.offline import plot, iplot
 from plotly.basedatatypes import BaseTraceType
 
 
-# pylint: disable=useless-object-inheritance
-class PlotlyHelper(object):
+class PlotlyHelper:
     """Class to help creating plotly plots with shapes, buttons and data """
 
     def __init__(self, title, layout=None):
@@ -115,7 +113,7 @@ class PlotlyHelper(object):
              >>> helper.add_data({"graph1" : [obj1], "graph2": [obj2]}).
              >>> helper.get_visibility_list(["graph1", "graph2"])
         """
-        if isinstance(names, six.string_types):
+        if isinstance(names, str):
             names = [names]
         try:
             true_indexes = set(item for name in names for item in self.visibility_map[name])
@@ -141,7 +139,7 @@ class PlotlyHelper(object):
                 raise TypeError('can t add {} to helper'.format(current_obj))
 
         for name, obj_group in obj_groups.items():
-            if not isinstance(name, six.string_types):
+            if not isinstance(name, str):
                 raise TypeError('bad name {} for object'.format(name))
 
             if not isinstance(obj_group, (list, BaseTraceType)):
@@ -197,7 +195,7 @@ class PlotlyHelper(object):
                     visibility_map[c_name] = range(start, stop)
             return to_removed_range
 
-        if isinstance(names, six.string_types):
+        if isinstance(names, str):
             names = [names]
 
         for name in names:
@@ -252,8 +250,7 @@ class PlotlyHelperPlane(PlotlyHelper):
     def __init__(self, title, plane):
         self.plane = self._sanitize_plane(plane)
         title = self._get_title(title, plane)
-        # pylint: disable=super-with-arguments
-        super(PlotlyHelperPlane, self).__init__(title, self._get_layout_skeleton(title, self.plane))
+        super().__init__(title, self._get_layout_skeleton(title, self.plane))
 
     @staticmethod
     def _get_title(title, plane):
@@ -283,7 +280,7 @@ class PlotlyHelperPlane(PlotlyHelper):
         Notes:
             Good values are : 3d, xy, xz, zy ...
         """
-        if not isinstance(plane, six.string_types):
+        if not isinstance(plane, str):
             raise TypeError('plane argument must be a string')
         plane = plane.lower()
         if len(plane) > 2:
