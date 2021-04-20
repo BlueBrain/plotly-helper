@@ -13,7 +13,6 @@ setup(
         'plotly>=3.4.2',
         'numpy>=1.15.4',
         'neurom>=2.0,<3.0',
-        'six>=1.12.0',
         'click>=6.0',
     ],
     extras_require={
@@ -22,12 +21,11 @@ setup(
     entry_points={
         'console_scripts': ['viewer=plotly_helper.cli:cli']
     },
+    python_requires='>=3.6',
     packages=find_packages(),
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.6',
     ],
