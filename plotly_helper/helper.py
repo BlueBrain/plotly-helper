@@ -12,7 +12,7 @@ from plotly.offline import plot, iplot
 from plotly.basedatatypes import BaseTraceType
 
 
-class PlotlyHelper():
+class PlotlyHelper:
     """Class to help creating plotly plots with shapes, buttons and data """
 
     def __init__(self, title, layout=None):
