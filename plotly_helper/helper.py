@@ -13,6 +13,7 @@ from plotly.offline import plot, iplot
 from plotly.basedatatypes import BaseTraceType
 
 
+# pylint: disable=useless-object-inheritance
 class PlotlyHelper(object):
     """Class to help creating plotly plots with shapes, buttons and data """
 
@@ -119,7 +120,7 @@ class PlotlyHelper(object):
         try:
             true_indexes = set(item for name in names for item in self.visibility_map[name])
         except KeyError as error:
-            raise KeyError('Can not find the object {}'.format(error))
+            raise KeyError('Can not find the object {}') from error
         return [i in true_indexes for i in range(self.nb_objects)]
 
     @staticmethod
@@ -251,6 +252,7 @@ class PlotlyHelperPlane(PlotlyHelper):
     def __init__(self, title, plane):
         self.plane = self._sanitize_plane(plane)
         title = self._get_title(title, plane)
+        # pylint: disable=super-with-arguments
         super(PlotlyHelperPlane, self).__init__(title, self._get_layout_skeleton(title, self.plane))
 
     @staticmethod
