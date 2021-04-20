@@ -17,7 +17,7 @@ setup(
     install_requires=[
         'plotly>=3.4.2',
         'numpy>=1.15.4',
-        'neurom>=1.4.13',
+        'neurom>=2.0.0',
         'six>=1.12.0',
         'click>=6.0',
     ],
