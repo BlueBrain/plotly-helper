@@ -1,8 +1,7 @@
 import os
-import sys
 from mock import patch
 
-from neurom import load_neuron
+from neurom import load_morphology
 from plotly_helper.neuron_viewer import NeuronBuilder
 
 from nose.tools import assert_dict_equal, assert_equal
@@ -11,7 +10,7 @@ PATH = os.path.dirname(__file__)
 # patching plotly.offline.plot to avoid the call
 @patch('plotly_helper.neuron_viewer.plot_')
 def test_color_section(_):
-    neuron = load_neuron(os.path.join(PATH, '..', 'tests', 'data', 'neuron.h5'))
+    neuron = load_morphology(os.path.join(PATH, '..', 'tests', 'data', 'neuron.h5'))
 
     # Colorize first section of the neurite
     builder = NeuronBuilder(neuron, '3d')

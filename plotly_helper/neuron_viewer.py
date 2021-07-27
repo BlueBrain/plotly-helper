@@ -11,7 +11,7 @@ import plotly.graph_objs as go
 from plotly.offline import init_notebook_mode, iplot, plot as plot_
 
 from neurom import COLS, iter_neurites, iter_sections, iter_segments
-from neurom.view.view import TREE_COLOR
+from neurom.view.matplotlib_impl import TREE_COLOR
 
 from plotly_helper.helper import PlotlyHelperPlane
 from plotly_helper.shapes import circle

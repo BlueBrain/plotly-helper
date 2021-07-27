@@ -1,11 +1,8 @@
 import os
-import sys
-from mock import patch
 
-from neurom import load_neuron
 from plotly_helper.shapes import line, circle
 
-from nose.tools import assert_dict_equal, assert_equal
+from nose.tools import assert_dict_equal
 PATH = os.path.dirname(__file__)
 
 def test_shapes():
