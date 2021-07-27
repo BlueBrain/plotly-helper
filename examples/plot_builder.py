@@ -1,11 +1,11 @@
 import os
-from neurom import load_neuron
+from neurom import load_morphology
 from plotly_helper.neuron_viewer import NeuronBuilder
 
 PATH = os.path.dirname(__file__)
 
 def plot():
-    neuron = load_neuron(os.path.join(PATH, '..', 'tests', 'data', 'neuron.h5'))
+    neuron = load_morphology(os.path.join(PATH, '..', 'tests', 'data', 'neuron.h5'))
     builder = NeuronBuilder(neuron, '3d', line_width=4)
 
     # Colorize first section of the neurite
