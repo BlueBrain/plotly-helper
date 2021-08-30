@@ -1,6 +1,6 @@
 '''The morph-tool command line launcher'''
 import click
-from neurom import load_neuron
+from neurom import load_morphology
 
 from plotly_helper.neuron_viewer import plot
 
@@ -16,4 +16,4 @@ def cli():
               default='3d')
 def view(input_file, plane):
     '''A simple neuron viewer'''
-    plot(load_neuron(input_file), plane=plane)
+    plot(load_morphology(input_file), plane=plane)
