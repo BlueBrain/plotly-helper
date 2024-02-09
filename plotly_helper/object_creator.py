@@ -18,10 +18,10 @@ def scatter_line(points, name=None, color=None, width=5, visible=True,
     Returns :
         A scatter plot representing points
     """
-    args = dict(visible=visible, marker=dict(size=marker_size, color=color),
-                line=dict(width=width, color=color),
-                x=points[:, 0], y=points[:, 1],
-                showlegend=showlegend, opacity=opacity)
+    args = {'visible': visible, 'marker': {'size': marker_size, 'color': color},
+            'line': {'width': width, 'color': color},
+            'x': points[:, 0], 'y': points[:, 1],
+            'showlegend': showlegend, 'opacity': opacity}
 
     if points.shape[1] == 3:
         scatter_fun = go.Scatter3d
@@ -49,11 +49,11 @@ def scatter(points, name=None, color=None, width=5, visible=True, showlegend=Tru
         A scatter plot representing points
     """
     obj = scatter_line(points, name, color, width, visible, showlegend, opacity)
-    marker = dict(
-        line=dict(width=width, color=color),
-        color=color,
-        size=width,
-    )
+    marker = {
+        'line': {'width': width, 'color': color},
+        'color': color,
+        'size': width,
+    }
     obj['marker'] = marker
     obj.mode = 'markers'
     return obj

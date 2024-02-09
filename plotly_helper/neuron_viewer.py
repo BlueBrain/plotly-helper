@@ -23,14 +23,14 @@ SOMA_NAME = 'soma'
 def _neurite_name(neurite, prefix, names):
     '''The neurite name used for the legend'''
     name = str(neurite.type).replace('NeuriteType.', '').replace('_', ' ')
-    return '{} {} {}'.format(prefix, name, names[neurite.type])
+    return f'{prefix} {name} {names[neurite.type]}'
 
 
 # pylint: disable=too-many-locals
 def _make_trace2d(neuron, plane, prefix='', opacity=1., visible=True, style=None, line_width=2):
     '''Create the trace to be plotted'''
     names = defaultdict(int)
-    lines = list()
+    lines = []
     for neurite in iter_neurites(neuron):
         names[neurite.type] += 1
 
@@ -49,14 +49,14 @@ def _make_trace2d(neuron, plane, prefix='', opacity=1., visible=True, style=None
             except KeyError:
                 colors = neurite_color
 
-            coords = dict()
+            coords = {}
             for i, coord in enumerate('xyz'):
                 coords[coord] = list(chain.from_iterable((p1[i], p2[i], None) for p1, p2 in segs))
 
-            coords = dict(x=coords[plane[0]], y=coords[plane[1]])
+            coords = {'x': coords[plane[0]], 'y': coords[plane[1]]}
             lines.append(go.Scattergl(name=name, visible=visible, opacity=opacity,
                                       showlegend=False,
-                                      line=dict(color=colors, width=line_width),
+                                      line={'color': colors, 'width': line_width},
                                       mode='lines',
                                       **coords))
     return lines
@@ -66,12 +66,12 @@ def _make_trace2d(neuron, plane, prefix='', opacity=1., visible=True, style=None
 def _make_trace(neuron, plane, prefix='', opacity=1., visible=True, style=None, line_width=2):
     '''Create the trace to be plotted'''
     names = defaultdict(int)
-    lines = list()
+    lines = []
     for neurite in iter_neurites(neuron):
         names[neurite.type] += 1
 
-        coords = dict(x=list(), y=list(), z=list())
-        colors = list()
+        coords = {'x': [], 'y': [], 'z': []}
+        colors = []
 
         try:
             default_color = style[neurite]['color']
@@ -96,7 +96,7 @@ def _make_trace(neuron, plane, prefix='', opacity=1., visible=True, style=None, 
         lines.append(go.Scatter3d(name=_neurite_name(neurite, prefix, names),
                                   showlegend=False,
                                   visible=visible, opacity=opacity,
-                                  line=dict(color=colors, width=line_width),
+                                  line={'color': colors, 'width': line_width},
                                   mode='lines',
                                   **coords))
     return lines
@@ -154,7 +154,7 @@ class NeuronBuilder:
 
     def get_figure(self):
         '''Build the figure and returns it'''
-        is_3d = (self.helper.plane == 'xyz')
+        is_3d = self.helper.plane == 'xyz'
         if is_3d:
             self.helper.add_data({NEURON_NAME: _make_trace(
                 self.neuron, self.helper.plane, style=self.properties, line_width=self.line_width)})
