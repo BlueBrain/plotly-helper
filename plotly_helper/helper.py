@@ -18,26 +18,27 @@ class PlotlyHelper:
     def __init__(self, title, layout=None):
         self.title = title
         self.layout = layout if layout else self._get_standard_layout(title)
-        self.data = list()
-        self.visibility_map = dict()
-        self.updatemenus = list()
-        self.shapes = list()
+        self.data = []
+        self.visibility_map = {}
+        self.updatemenus = []
+        self.shapes = []
         self.nb_objects = 0
-        self.button_group_to_index = dict()
+        self.button_group_to_index = {}
         self.button_group_index = -1
 
     @staticmethod
     def _get_standard_layout(title):
         """ Return a very simple layout with a title and legend's setup """
-        return dict(autosize=True, title=title,
-                    legend=PlotlyHelper._get_legend())
+        return {'autosize': True, 'title': title,
+                'legend': PlotlyHelper._get_legend(),
+                }
 
     @staticmethod
     def _get_legend():
         """ Returns the legend dict already setup for the plot """
-        return dict(x=0.8, y=1, traceorder='normal',
-                    font=dict(family='sans-serif', size=12, color='#000'),
-                    bgcolor='#FFFFFF', bordercolor='#FFFFFF', borderwidth=2)
+        return {'x': 0.8, 'y': 1, 'traceorder': 'normal',
+                'font': {'family': 'sans-serif', 'size': 12, 'color': '#000'},
+                'bgcolor': '#FFFFFF', 'bordercolor': '#FFFFFF', 'borderwidth': 2}
 
     @staticmethod
     def _get_button_skeleton(direction='down'):
@@ -46,7 +47,12 @@ class PlotlyHelper:
         Args:
             direction: the direction for the button layout (default=down)
         """
-        return dict(type='dropdown', direction=direction, xanchor='left', active=0, buttons=list())
+        return {'type': 'dropdown',
+                'direction': direction,
+                'xanchor': 'left',
+                'active': 0,
+                'buttons': [],
+                }
 
     def _add_button_group(self, name, direction='down'):
         """ Add a button group to the plot
@@ -74,7 +80,7 @@ class PlotlyHelper:
             ValueError: An error occurs if name shadows a previous entry name
         """
         if name in self.visibility_map:
-            raise ValueError('{} already exists'.format(name))
+            raise ValueError(f'{name} already exists')
         self.visibility_map[name] = range(len(self.data), len(self.data) + len(objs))
 
     def _place_buttons(self, offset=0.01):
@@ -132,22 +138,22 @@ class PlotlyHelper:
             ValueError: if an item is empty
         """
         if not isinstance(obj_groups, dict):
-            raise TypeError('can t add {} to helper. Must be a dict'.format(obj_groups))
+            raise TypeError(f"can't add {obj_groups} to helper. Must be a dict")
 
         def _obj_validator(current_obj):
             if not isinstance(current_obj, BaseTraceType):
-                raise TypeError('can t add {} to helper'.format(current_obj))
+                raise TypeError(f"can't add {current_obj} to helper")
 
         for name, obj_group in obj_groups.items():
             if not isinstance(name, str):
-                raise TypeError('bad name {} for object'.format(name))
+                raise TypeError(f'bad name {name} for object')
 
             if not isinstance(obj_group, (list, BaseTraceType)):
-                raise TypeError('bad obj_group {} for name'.format(name))
+                raise TypeError(f'bad obj_group {name} for name')
 
             if isinstance(obj_group, list):
                 if not obj_group:
-                    raise ValueError('{} object is empty'.format(name))
+                    raise ValueError(f'{name} object is empty')
                 for obj in obj_group:
                     _obj_validator(obj)
 
@@ -185,7 +191,7 @@ class PlotlyHelper:
 
         def _remove_visibility(visibility_map, obj_name):
             if obj_name not in visibility_map:
-                raise ValueError('{} must exists'.format(obj_name))
+                raise ValueError(f'{obj_name} must exists')
             to_removed_range = visibility_map.pop(obj_name)
             for c_name, obj_range in self.visibility_map.items():
                 if obj_range[0] > to_removed_range[-1]:
@@ -230,7 +236,7 @@ class PlotlyHelper:
         """
         self._add_button_group(groupname, direction)
         index = self.button_group_to_index[groupname]
-        self.updatemenus[index]['buttons'].append(dict(label=label, method=method, args=args))
+        self.updatemenus[index]['buttons'].append({'label': label, 'method': method, 'args': args})
 
     def get_fig(self):
         """ Return the final figure
@@ -241,7 +247,7 @@ class PlotlyHelper:
         self._place_buttons()
         self.layout['updatemenus'] = self.updatemenus
         self.layout['shapes'] = self.shapes
-        return dict(data=self.data, layout=self.layout)
+        return {'data': self.data, 'layout': self.layout}
 
 
 class PlotlyHelperPlane(PlotlyHelper):
@@ -260,7 +266,7 @@ class PlotlyHelperPlane(PlotlyHelper):
             title: the title for the plot.
             plane: the sanitized plane used for this plot
         """
-        return '{}-{}'.format(title, plane)
+        return f'{title}-{plane}'
 
     @staticmethod
     def _sanitize_plane(plane):
@@ -305,10 +311,13 @@ class PlotlyHelperPlane(PlotlyHelper):
             For 2d scene the camera is simply positioned in such a way that for xy plane, the
             x axis is from left to right and y for bottom to up.
         """
-        camera = dict(up=dict(x=0, y=0, z=0), center=dict(x=0, y=0, z=0), eye=dict(x=0, y=0, z=0))
+        camera = {'up': {'x': 0, 'y': 0, 'z': 0},
+                  'center': {'x': 0, 'y': 0, 'z': 0},
+                  'eye': {'x': 0, 'y': 0, 'z': 0},
+                  }
         if plane == 'xyz':
-            camera['up'] = dict(x=0, y=0, z=1)
-            camera['eye'] = dict(x=-1.7428, y=1.0707, z=0.7100, )
+            camera['up'] = {'x': 0, 'y': 0, 'z': 1}
+            camera['eye'] = {'x': -1.7428, 'y': 1.0707, 'z': 0.7100, }
         else:
             unit = {v: np.eye(3)[i] for i, v in enumerate('xyz')}
             sign_cross = np.sum(np.sign(np.cross(unit[plane[0]], unit[plane[1]])))
@@ -329,25 +338,25 @@ class PlotlyHelperPlane(PlotlyHelper):
             The colors for the planes, background etc are set here.
         """
         dragmode = 'zoom' if plane != 'xyz' else 'turntable'
-        scene = dict(xaxis=None, yaxis=None, zaxis=None, aspectmode='data',
-                     dragmode=dragmode, camera=PlotlyHelperPlane._get_camera(plane))
+        scene = {'xaxis': None, 'yaxis': None, 'zaxis': None, 'aspectmode': 'data',
+                 'dragmode': dragmode, 'camera': PlotlyHelperPlane._get_camera(plane)}
         for axis in 'xyz':
             axis_name = axis + 'axis'
-            scene[axis_name] = dict(
-                gridcolor='rgb(255, 255, 255)',
-                zerolinecolor='rgb(255, 255, 255)',
-                showbackground=True,
-                backgroundcolor='rgb(238, 238,238)',
-                visible=True,
-            )
+            scene[axis_name] = {
+                'gridcolor': 'rgb(255, 255, 255)',
+                'zerolinecolor': 'rgb(255, 255, 255)',
+                'showbackground': True,
+                'backgroundcolor': 'rgb(238, 238,238)',
+                'visible': True,
+            }
         return scene
 
     @staticmethod
     def _get_layout_skeleton(title, plane):
         """ Returns a layout skeleton that is camera compliant """
-        layout = dict(autosize=True, title=title,
-                      scene=PlotlyHelperPlane._get_scene(plane),
-                      legend=PlotlyHelperPlane._get_legend())
+        layout = {'autosize': True, 'title': title,
+                  'scene': PlotlyHelperPlane._get_scene(plane),
+                  'legend': PlotlyHelperPlane._get_legend()}
         return layout
 
     def add_plane_buttons(self):
