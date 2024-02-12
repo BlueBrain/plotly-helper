@@ -1,4 +1,3 @@
-import nose.tools as nt
 import numpy as np
 import numpy.testing as npt
 
@@ -23,7 +22,7 @@ def test_create_scatter_line():
     npt.assert_array_equal(good_obj.pop('x'), obj.pop('x'))
     npt.assert_array_equal(good_obj.pop('y'), obj.pop('y'))
     npt.assert_array_equal(good_obj.pop('z'), obj.pop('z'))
-    nt.assert_dict_equal(obj, good_obj)
+    assert obj == good_obj
 
 
 def test_scatter_line_2():
@@ -43,7 +42,7 @@ def test_scatter_line_2():
     npt.assert_array_equal(good_obj.pop('x'), obj.pop('x'))
     npt.assert_array_equal(good_obj.pop('y'), obj.pop('y'))
     npt.assert_array_equal(good_obj.pop('z'), obj.pop('z'))
-    nt.assert_dict_equal(obj, good_obj)
+    assert obj == good_obj
 
 def test_scatter():
     points = np.array([[0, 0, 0], [1, 1, 1], [2, 2, 2]])
@@ -63,7 +62,7 @@ def test_scatter():
     npt.assert_array_equal(good_obj.pop('x'), obj.pop('x'))
     npt.assert_array_equal(good_obj.pop('y'), obj.pop('y'))
     npt.assert_array_equal(good_obj.pop('z'), obj.pop('z'))
-    nt.assert_dict_equal(obj, good_obj)
+    assert obj == good_obj
 
 
 def test_point():
@@ -84,7 +83,7 @@ def test_point():
     npt.assert_array_equal(good_obj.pop('x'), obj.pop('x'))
     npt.assert_array_equal(good_obj.pop('y'), obj.pop('y'))
     npt.assert_array_equal(good_obj.pop('z'), obj.pop('z'))
-    nt.assert_dict_equal(obj, good_obj)
+    assert obj == good_obj
 
 
 def test_vector():
@@ -106,4 +105,4 @@ def test_vector():
     npt.assert_array_equal(good_obj.pop('x'), obj.pop('x'))
     npt.assert_array_equal(good_obj.pop('y'), obj.pop('y'))
     npt.assert_array_equal(good_obj.pop('z'), obj.pop('z'))
-    nt.assert_dict_equal(obj, good_obj)
+    assert obj == good_obj
