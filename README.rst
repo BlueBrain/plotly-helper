@@ -14,4 +14,4 @@ License
 plotly-helper is licensed under the terms of the GNU Lesser General Public License version 3.
 Refer to COPYING.LESSER and COPYING for details.
 
-Copyright (c) 2018-2022 Blue Brain Project/EPFL
+Copyright (c) 2018-2024 Blue Brain Project/EPFL
